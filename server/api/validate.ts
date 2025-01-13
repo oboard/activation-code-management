@@ -4,6 +4,7 @@ export default defineEventHandler(async (event) => {
     try {
         const body = await readBody(event)
         const { code } = JSON.parse(body)
+        console.log(body);
         
         if (!code) {
             return {
