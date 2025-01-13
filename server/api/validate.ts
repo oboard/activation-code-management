@@ -28,12 +28,12 @@ export default defineEventHandler(async (event) => {
 
         return {
             success: true,
-            message: 'Code validated and consumed successfully'
+            message: '激活码有效'
         }
     } catch (error) {
         return {
             success: false,
-            error: 'Failed to validate code'
+            error: '激活码无效'
         }
     }
 }) 

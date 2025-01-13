@@ -9,6 +9,7 @@
 - 验证和使用激活码
 - 分页显示激活码列表
 - 一键复制激活码
+- 密码保护的管理界面
 - 美观的 UI 界面（基于 Tailwind CSS）
 
 ## 技术栈
@@ -41,8 +42,12 @@ npm install
 
 创建 `.env` 文件并添加以下配置：
 ```env
+# Redis 配置
 KV_REST_API_URL=你的_REDIS_URL
 KV_REST_API_TOKEN=你的_REDIS_TOKEN
+
+# 管理界面密码（默认：admin123）
+ADMIN_PASSWORD=你的管理密码
 ```
 
 ## 开发

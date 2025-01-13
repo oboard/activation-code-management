@@ -11,7 +11,10 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     kvRestApiUrl: process.env.KV_REST_API_URL,
-    kvRestApiToken: process.env.KV_REST_API_TOKEN
+    kvRestApiToken: process.env.KV_REST_API_TOKEN,
+    public: {
+      adminPassword: process.env.ADMIN_PASSWORD || 'admin123'
+    }
   },
 
   app: {
