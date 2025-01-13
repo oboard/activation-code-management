@@ -3,8 +3,9 @@ import { redis } from '../utils/redis'
 export default defineEventHandler(async (event) => {
     try {
         const body = await readBody(event)
-        const { code } = JSON.parse(body)
         console.log(body);
+        let { code } = typeof body === 'string' ? JSON.parse(body) : body
+        code = code.trim().toUpperCase();
         
         if (!code) {
             return {
@@ -19,7 +20,7 @@ export default defineEventHandler(async (event) => {
         if (!exists) {
             return {
                 success: false,
-                error: 'Invalid code'
+                error: '激活码无效'
             }
         }
 
@@ -34,7 +35,7 @@ export default defineEventHandler(async (event) => {
     } catch (error) {
         return {
             success: false,
-            error: '激活码无效'
+            error: '激活码错误'
         }
     }
 }) 
