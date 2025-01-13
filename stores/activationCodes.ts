@@ -6,6 +6,7 @@ export const useActivationCodeStore = defineStore('activationCodes', () => {
   const codes = ref<ActivationCode[]>([])
   const currentPage = ref(1)
   const itemsPerPage = 10
+  const selectedCodes = ref<Set<string>>(new Set())
 
   const paginatedCodes = computed(() => {
     const start = (currentPage.value - 1) * itemsPerPage
@@ -16,6 +17,32 @@ export const useActivationCodeStore = defineStore('activationCodes', () => {
   const totalPages = computed(() =>
     Math.ceil(codes.value.length / itemsPerPage)
   )
+
+  const hasSelectedCodes = computed(() => selectedCodes.value.size > 0)
+
+  const toggleSelect = (code: string) => {
+    if (selectedCodes.value.has(code)) {
+      selectedCodes.value.delete(code)
+    } else {
+      selectedCodes.value.add(code)
+    }
+  }
+
+  const selectAll = () => {
+    for (const code of paginatedCodes.value) {
+      selectedCodes.value.add(code.code)
+    }
+  }
+
+  const unselectAll = () => {
+    selectedCodes.value.clear()
+  }
+
+  const getSelectedCodesMarkdown = () => {
+    const selectedItems = codes.value.filter(code => selectedCodes.value.has(code.code))
+
+    return selectedItems.map((code, index) => `${index + 1}: ${code.code}`).join('\n')
+  }
 
   const fetchCodes = async () => {
     try {
@@ -41,7 +68,6 @@ export const useActivationCodeStore = defineStore('activationCodes', () => {
       const result = await response.json() as AddCodesResponse
 
       if (result.success) {
-        // 重新获取所有代码
         await fetchCodes()
       } else {
         console.error('Failed to generate codes:', result.error)
@@ -60,7 +86,7 @@ export const useActivationCodeStore = defineStore('activationCodes', () => {
       const result = await response.json()
 
       if (result.success) {
-        // 重新获取所有代码
+        selectedCodes.value.delete(code)
         await fetchCodes()
         return true
       }
@@ -86,6 +112,12 @@ export const useActivationCodeStore = defineStore('activationCodes', () => {
     currentPage,
     paginatedCodes,
     totalPages,
+    selectedCodes,
+    hasSelectedCodes,
+    toggleSelect,
+    selectAll,
+    unselectAll,
+    getSelectedCodesMarkdown,
     generateCodes,
     validateCode,
     setPage,
