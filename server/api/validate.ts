@@ -3,7 +3,6 @@ import { redis } from '../utils/redis'
 export default defineEventHandler(async (event) => {
     try {
         const body = await readBody(event)
-        console.log(body);
         let { code } = typeof body === 'string' ? JSON.parse(body) : body
         code = code.trim().toUpperCase();
         
@@ -24,13 +23,28 @@ export default defineEventHandler(async (event) => {
             }
         }
 
-        // Delete the code if it exists
-        await redis.del(key)
-        console.log('delete key', key)
+        // 获取剩余次数
+        const data = await redis.get<{ remainingUses: number, createdAt: string }>(key)
+        if (!data || data.remainingUses <= 0) {
+            await redis.del(key)
+            return {
+                success: false,
+                error: '激活码已失效'
+            }
+        }
+
+        // 减少使用次数
+        data.remainingUses -= 1
+        if (data.remainingUses > 0) {
+            await redis.set(key, data)
+        } else {
+            await redis.del(key)
+        }
 
         return {
             success: true,
-            message: '激活码有效'
+            message: '激活码有效',
+            data: { remainingUses: data.remainingUses }
         }
     } catch (error) {
         return {

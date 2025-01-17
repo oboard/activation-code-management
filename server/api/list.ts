@@ -6,11 +6,14 @@ export default defineEventHandler(async (event) => {
     const codes = []
     
     for (const key of keys) {
-      const value = await redis.get(key)
-      codes.push({
-        code: key.replace('code:', ''),
-        createdAt: value
-      })
+      const value = await redis.get<{ createdAt: string, remainingUses: number }>(key)
+      if (value) {
+        codes.push({
+          code: key.replace('code:', ''),
+          createdAt: value.createdAt,
+          remainingUses: value.remainingUses
+        })
+      }
     }
     
     return {

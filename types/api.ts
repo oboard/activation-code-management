@@ -1,9 +1,10 @@
 export interface ActivationCode {
   code: string
   createdAt: string
+  remainingUses: number
 }
 
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   success: boolean
   data?: T
   error?: string
@@ -20,4 +21,7 @@ export interface AddCodesResponse extends ApiResponse {
 
 export interface ValidateCodeResponse extends ApiResponse {
   message?: string
+  data?: {
+    remainingUses: number
+  }
 }

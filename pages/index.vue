@@ -63,6 +63,9 @@
               创建时间
             </th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              剩余次数
+            </th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               操作
             </th>
           </tr>
@@ -84,6 +87,14 @@
               {{ new Date(code.createdAt).toLocaleString() }}
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
+              <span 
+                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
+                :class="code.remainingUses > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
+              >
+                {{ code.remainingUses }}次
+              </span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
               <div class="flex gap-2">
                 <button 
                   @click="copyCode(code.code)"
@@ -92,6 +103,7 @@
                   复制
                 </button>
                 <button 
+                  v-if="code.remainingUses > 0"
                   @click="validateCode(code.code)"
                   class="text-red-600 hover:text-red-900 px-3 py-1 rounded"
                 >

@@ -21,8 +21,11 @@ export default defineEventHandler(async (event) => {
         key = `code:${code}`
       } while (await redis.exists(key))
 
-      await redis.set(key, new Date().toISOString())
-      console.log('set key',key)
+      // 存储激活码信息，包括创建时间和剩余使用次数
+      await redis.set(key, {
+        createdAt: new Date().toISOString(),
+        remainingUses: 2 // 初始可使用2次
+      })
       codes.push(code)
     }
 
