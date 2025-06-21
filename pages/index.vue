@@ -196,7 +196,13 @@ const toggleSelectAll = (checked: boolean) => {
 }
 
 const logout = () => {
-  localStorage.removeItem('isLoggedIn')
+  const cookie = useCookie('isLoggedIn', {
+    maxAge: 60 * 60 * 24 * 7,
+    path: '/',
+    secure: true,
+    sameSite: 'strict'
+  })
+  cookie.value = null
   router.push('/login')
 }
 </script>
